@@ -1,0 +1,265 @@
+10/25/19 1.05 (OpenBSD)
+Change all uses of sprintf to snprintf.
+Change all uses of strcat to strlcat.
+Change all uses of strcpy to strlcpy.
+Use mkstemp instead of mktemp.
+Remove everything else not related to the Wordstar clone.
+
+10/23/19 1.04
+Update Makefile for modern GTK/glibc; fix empty default case.
+
+12/03/04 1.03
+Fixed SegFault on attempt to write to read-only filesystem.
+Added exit query "Save, eXit or Cont?" if file modified but unsaved.
+
+11/29/04 1.03
+Changed termcap console version name from mye to e.
+Added '\r' handling to function show_rest() in eeng.c.
+
+10/10/04 1.03
+Added mouse wheel navigation.
+
+03/11/04 1.02
+Fixed runaway keypress during mark block operations.
+
+02/27/04 1.01
+Made 'stdin' more robust so that non-existent files don't cause 'stdin' file
+reading, and no 'stdin' pipe input exits gracefully.
+Updated mye VERSION number from 0.75 (finally!).
+
+02/27/04 1.01
+added file input from 'stdin' in eeng.c for edx only if no file name given.
+added command line option '-b' to disable detaching from the console.
+
+02/26/04 1.01
+added GTK_quit to func sys_exit in eeng.c to eliminate bogus exit msgs.
+
+01/13/04 1.00
+commented out GLIBS and GINCS in Makefile to not compile with GTK
+
+09/05/03 0.99
+Made xid/Gtk a compile time option by uncommenting the GLIBS and GINCS defines
+ in Makefile.
+Added bash script 'fsx' which recursively searches subdirectories and then
+ displays the results in a new instance of edx for use as a file picker.
+Set F5 invoked 'Command' buffer to default to "fsx  ".
+
+09/04/03 0.99
+Added word_marknopen which marks word under cursor and open in new window if a
+ valid filename
+
+08/22/03 Gtk 0.98
+Added tests for non-zero xid for 'fork' and display setups so that edx can 
+ run standalone or as Gtk client app.
+
+07/11/03 Gtk 0.97
+Modified Xwindows structure to use Gtk toplevel window and added a Gtk socket
+ plug option for the toplevel window in order to run inside a tabbed version
+ of dillo for IDE purposes.
+
+07/11/03 0.96
+fixed incomplete 0.95 fix with changes to new_edit (changed fn test) and 
+ dialog (added '0' parameter to call to dialogCB).
+
+07/11/03 0.95
+Added file name char string to newedit() to fix failure to open named files.
+
+07/10/03 0.94
+Added signal handler to kill off child zombie processes.
+
+03/19/03 0.93
+Turn off mark before 'return to prev pos'
+
+01/04/03 0.92
+Added ^O^W flag to enable/disable 'Word' mode searches.
+
+12/15/02 0.91
+Modified 'init(' to accept grep style 'filename:linenumber' format.
+
+07/15/02 0.88
+Reworked clreol and show_vbar to eliminate excessive flashing of scrollbar 
+ during use.
+
+07/08/02 0.88
+Updated ws.c and emacs.c for TERMINAL mode.
+Smoothed show_vbar for consistent scrollbar colors.
+
+07/07/02 0.87
+Enhanced 3D effect by outlining status bar and tweaking clreol to support it.
+
+07/06/02 0.86
+Completed full 3D scrollbar with tweaks in clreol and show_note. Scrollbar  
+ size now 1296 bytes total.
+
+07/04/02 0.83
+Added outlines and triangles to 3D scrollbar. Optimized for size. Non-3D now
+ 676 bytes.
+
+07/03/02 0.82
+Reworked and optimized scrollbar code for function, speed and size. Now behaves
+ like a proper scrollbar, i.e. scroll 1 line up/down, 1 page up/down and track
+ scrollbar thumb. Non 3d size is 708 bytes.
+Updated README to include scrollbar.
+Removed NOEDIT option.
+My thanks again to Jean-Pierre Demailly for his elegant code.
+
+06/29/02 0.80
+Changed 3d effect code from DrawLine to Drawlines.
+
+06/28/02 0.79
+Added THREED option for scrollbar 'thumb'. Scrollbar size now up to 872 bytes.
+
+06/28/02 0.78
+Optimized scrollbar code for size and speed. Changed 'thumb' to outline. Now
+ 644 bytes.
+Fixed occasional initial status bar offset by changing drawcursor to clrscr in
+ function main in edx.c.
+
+06/27/02 0.77
+Added Jean-Pierre's NODEDIT option that filters all keys except navigation
+ keys.
+Added Jean-Pierre's superbly elegant vertical scrollbar code. Only 872 bytes!
+
+06/12/02 0.76
+Replaced magic number sizes of 256 with 'NLEN' define in edx.c and eeng.c
+
+06/12/02 0.75
+BUGFIX: changed max edit buffer input length for chgdir.
+
+05/26/02 0.74
+BUGFIX: Added buffer length limits to file eeng.c, function dialog.
+Added "Undo buffer 90% full!" warning to file eeng.c, function new_undo.
+
+05/21/02 0.72
+Following changes from Jean-Pierre. Thank you.
+Modified goto_x to force screen update only when left margin changes.
+Modified chg_case to also update text changed flag.
+Added show_top to end of function key_control in both ws.c and emacs.c thereby
+ elimenating some status line visual artifacts.
+
+05/18/02 0.71
+Modified eeng.c, transpose to save undo data and indicate file changed.
+
+05/17/02 0.70
+BUGFIX: Changed eeng.c, file_fout. Would not save files from '/' being edited
+ in another directory. Left temp file in '/'.
+Modified ws.c to unmark blocks for unshifted control keys.
+
+05/16/02 0.69
+Modified eeng.c to compile either static or dynamic edbuf, bb and unbuf
+ allocation code with #define STATICBUF. Mye.c defaults to static for
+ compatability with Win32 compilers.
+
+05/14/02 0.68
+Modified mye.c and eeng.c to use the same editor engine across the board for X
+ and linux console. Win32 console does not compile static buffer code due to
+ header file incompatability with 'void' pointers. Static buffer code OK.
+Fixed Backspace key binding.
+
+05/10/02 0.67
+Modified cursor_left, cursor_right, word_left and move_to to support moving
+ past begin/end of line, which also enabled cursor selection to track to empty
+ lines.
+Modified block_fill to properly wrap at word boundaries when Fill mode enabled.
+
+05/08/02 0.66
+Folded in Jean-Pierre's dynamic buffer allocation code for the block buffer,
+ undo and main edit buffer. Smaller initial memory footprint and more stable on
+ large undo/redo runs.
+
+04/30/02 0.65
+Added new_edit, which takes both a pointer to a directory and a pointer to a
+ file name as parameters for opening  a new instance of edx. 
+Added #define EXTHELP to specifiy opening an external text file in a new 
+ instance of edx as a response to invoking help.
+
+04/27/02 0.64
+Coded ws.c function key_func F3 to open named file in a new instance of edx.
+Coded ws.c function key_func ^F3 to open named/empty file in current instance
+ of edx.
+Coded explicit save-as into ws.c function ctrlk_key ^KF rather than implicit
+ for a modified file.
+Added function newfile to invoke file open dialog for new edx instance. 
+Modified newedit to use newbuf for file name to open.
+Modified functions block_format and block_fill to use autoindent code to
+ provide left margin formatting.
+
+04/25/02 0.64
+Added setting lastmk to goto_find for proper marked block operation.
+Tweaked function ws.c key_control for proper marked block operation.
+Added function find_match to search for and display matching '(,{,[,],},)'.
+Added code to ws.c function key_control to turn off marked blocks unless shift
+ held down.
+
+04/19/02 0.62
+BUGFIX: function dorepl(), advanced search pointer past replaced string to
+  prevent forever loop.
+Added #define VERSION for single point rev. control.
+Added GENERIC/PERSONAL compiler #defines.
+Grouped #defines to aid customization.
+Reworked ws/emacs compiler switches and structure.
+Added compiler #define to select either vertical or horizontal cursor.
+Added compiler #define to select mouse operational characteristics.
+Added compiler #define to enable/disable bak file creation.
+Added compiler #define to enable/disable edxrc file.
+Merged Jean-Pierre Demailly's fixes/improvements into ver. 0.58.
+
+04/16/02 0.60
+Recieved Jean-Pierre Demailly's code changes/improvements as ver. 0.60:
+ws/emacs key bindings.
+Selectable cursor color.
+Simplified font metrics.
+Added edxrc for user programmable Alt-key bindings.
+Additional command line options.
+Improved mouse selection code.
+Improved start up sequencing.
+Updated help text.
+Added Greek letter capability.
+Added goto last mark function.
+Improved title bar title setting code.
+Added transpose char code.
+Modified show_help to display edxrc settings.
+Added bak file creation.
+Added reset_mark function.
+
+04/05/02 0.58
+BUGFIX: Initialized cur_pos in eeng.c, function file_new to prevent GPF when
+paste is first action performed.
+
+04/02/02 0.56
+BUGFIX: Limited mouse moveto x range to positive numbers, preventing program
+lockup.
+Updated edx help screen to reflect recent changes.
+Added Makefile.lcc to compile 20k mye.exe binary. 
+Use 'cl -DMSVC -Ox mye.c' on MSVC to compile a 55k mye.exe binary.
+
+04/01/02 0.54
+Retrofit all edx improvements into mye. Update users manual at the beginning
+of mye.c. Update HELP_STR to new mye.c configuration.
+
+03/31/02 0.52
+Added suspend autoindent to paste_primary from X selection.
+
+03/29/02 0.50
+Added TODO file.
+Added autoiNdent flag and support code to key_return.
+Added convert marked block to UPPER/lower case.
+
+03/28/02 0.49
+Updated MANUAL and README.
+Moved SYSTEM and cd functions from edx.c to eeng.c. 
+Cleaned up display for lines longer than screen_width. 
+Reworked macro recording and playback. 
+Removed unused function show_status. 
+Restructured status line. 
+Improved goto last position logic. 
+Reworked block_fill to match improved display.
+
+03/24/02 0.48
+BUGFIX: removed memset write-out-of-bounds GPF in function 'drstr'.
+
+03/24/02 0.46
+Improved dialog character editing. 
+Added change directory dialog,
+Added xcalc and xcalendar hot keys.
+Added block format undo/redo.

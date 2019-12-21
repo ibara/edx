@@ -1,0 +1,13 @@
+# Key bindings for edx
+# All keys 'a' to 'z' (lower case) can be bound.
+# There are two string arguments %s %s, respectively 
+#     - the current working directory
+#     - the name of the file being edited
+#
+d: xdiary &
+e: DIR=%s; ROOTNAME=`echo %s | cut -d"." -f 1`; edx $DIR/$ROOTNAME.log &
+l: latex %s/%s &
+p: xenscript %s/%s &
+t: tex %s/%s &
+v: DIR=%s; ROOTNAME=`echo %s | cut -d"." -f 1`; xdvi -s 6 $DIR/$ROOTNAME.dvi &
+z: cd %s; rxvt -font 8x13 -pr green -cr red -sl 500 -sr +st -geometry 80x30 &
