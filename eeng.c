@@ -483,7 +483,7 @@ char * realloc_buffer(int mode)
 			ptr = realloc(unbuf, (size_t)i);
 			if (ptr) {
 				umax += UMAX;
-				i = (int)ptr - (int)unbuf;
+				i = (intptr_t)ptr - (intptr_t)unbuf;
 				unbuf = ptr;
 				undop = (void*)undop+i;
 				undosp = (void*)undosp+i;
@@ -516,7 +516,7 @@ U_REC* new_undo(char *pos, int len)
 		tmp = (void *)unbuf;
 	}
 
-	tmp->link = (unsigned int)undosp - (unsigned int)unbuf;
+	tmp->link = (uintptr_t)undosp - (uintptr_t)unbuf;
 	tmp->pos = pos - edbuf;
 	tmp->length = 0;
 	return tmp;
@@ -1190,7 +1190,7 @@ void file_read()
 		((fi == 0) && first_time && *ewin.name)) goto badex;
 	/* read complete line */
 	do {
-		if(first_time && !fi && !*ewin.name) sz = read((int)fi, (char*)&c, 1);
+		if(first_time && !fi && !*ewin.name) sz = read((intptr_t)fi, (char*)&c, 1);
 		else c = fgetc(fi);
 		if(sz == -1) goto badex; // no stdin if sz == -1
 #else
@@ -1942,9 +1942,9 @@ void doblockr()
 	} while(bb_end < bb+BMAX || c != EOF);
 #else
 		if (bb_end >= bb+bmax) {
-			d = (int)bb;
+			d = (intptr_t)bb;
 			realloc_buffer(1);
-			d = (int)bb - d;
+			d = (intptr_t)bb - d;
 			col += d;
 			bb_end += d;
 		}

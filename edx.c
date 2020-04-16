@@ -1,13 +1,14 @@
 
 #ifdef DOGTK
-#define VERSION "Gtk 1.05 (OpenBSD)"
+#define VERSION "Gtk 1.06 (OpenBSD)"
 #else //DOGTK
-#define VERSION "1.05 (OpenBSD)"
+#define VERSION "1.06 (OpenBSD)"
 #endif //DOGTK
 
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <signal.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -64,6 +65,7 @@ char *FgColor="Yellow", *BgColor="Black", *CrColor="White", *HiFgColor="Black", 
 
 // black char on linen, red cursor, black on grey high-lights
 char *FgColor="Black", *BgColor="Linen", *CrColor="Red", *HiFgColor="Black", *HiBgColor="Grey75";
+int dark;
 
 // medium font for black on linen best presentation
 #define FONTNAME	"-b&h-lucidatypewriter-medium-r-normal-sans-12-*-*-*-m-70-iso8859-1"
@@ -360,11 +362,10 @@ void show_vbar()
 #endif /* THREED */
 
 	// draw thumb
-#ifdef DARK
+	if (dark)
 		XSetForeground(dpy,gc,~HiFgXColor.pixel);
-#else
+	else
 		XSetForeground(dpy,gc,FgXColor.pixel);
-#endif /* DARK */
 	XDrawRectangle(dpy, win, gc, Width-10, ftheight+pos, 9, vcur);
 
 #ifdef THREED
@@ -385,11 +386,10 @@ void show_vbar()
 		XDrawLines(dpy, win, gc, opoints, 11,CoordModePrevious);
 
 		// draw in light color for 3D shading
-#ifdef DARK
-		XSetForeground(dpy,gc,BgXColor.pixel);
-#else
-		XSetForeground(dpy,gc,BgXColor.pixel);
-#endif /* DARK */
+		if (dark)
+			XSetForeground(dpy,gc,BgXColor.pixel);
+		else
+			XSetForeground(dpy,gc,BgXColor.pixel);
 		XDrawSegments(dpy, win, gc, lpoints, 4);
 	}
 #endif /* THREED */
@@ -632,6 +632,14 @@ void init(int argc,char *argv[])
 		} else if (i<argc-1 && !strcasecmp(argv[i], "-h")) {
 			screen_height = atoi(argv[++i]);
 			if (screen_height<5) screen_height = 5;
+		} else if (i<argc-1 && !strcasecmp(argv[i], "-d")) {
+			dark = 1;
+			FgColor="Yellow";
+			BgColor="Black";
+			CrColor="White";
+			HiFgColor="Black";
+			HiBgColor="Grey75";
+			++i;
 		} else {
 			if (*ewin.name) break;
 			{

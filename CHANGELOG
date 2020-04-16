@@ -1,3 +1,8 @@
+04/15/20 1.06 (OpenBSD)
+Add -d flag for runtime dark mode toggle.
+Silence some warnings emitted by clang.
+Add missing include to edx.c
+
 10/25/19 1.05 (OpenBSD)
 Change all uses of sprintf to snprintf.
 Change all uses of strcat to strlcat.
