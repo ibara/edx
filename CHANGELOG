@@ -1,3 +1,7 @@
+08/12/23 1.08 (OpenBSD)
+Add configure script to ease building on non-OpenBSD platforms.
+Add portable versions of snprintf, strlcat, and strlcpy.
+
 08/11/23 1.07 (OpenBSD)
 Fix -d flag handling.
 Fix some warnings emitted by gcc-14.
