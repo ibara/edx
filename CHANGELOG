@@ -1,3 +1,10 @@
+08/11/23 1.07 (OpenBSD)
+Fix -d flag handling.
+Fix some warnings emitted by gcc-14.
+Remove last vestige of -DWORDSTAR.
+Remove last vestige of -DDOGTK.
+Change default tabsize to 8.
+
 04/15/20 1.06 (OpenBSD)
 Add -d flag for runtime dark mode toggle.
 Silence some warnings emitted by clang.

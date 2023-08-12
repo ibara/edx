@@ -1,9 +1,4 @@
-
-#ifdef DOGTK
-#define VERSION "Gtk 1.06 (OpenBSD)"
-#else //DOGTK
-#define VERSION "1.06 (OpenBSD)"
-#endif //DOGTK
+#define VERSION "1.07 (OpenBSD)"
 
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -23,11 +18,6 @@
 #define  XK_MISCELLANY
 #include <X11/keysymdef.h>
 #include <sys/time.h>
-#ifdef DOGTK
-#include <gtk/gtk.h>
-#include <gtk/gtksocket.h>
-#include <gdk/gdkx.h>
-#endif //DOGTK
 
 #define DEFAULT_WIDTH 80
 #define DEFAULT_HEIGHT 25
@@ -132,10 +122,6 @@ static enum {
 } executive = MAIN; 	/* default character handler */
 
 /* X related globals */
-#ifdef DOGTK
-GtkWidget *main_win;
-guint32 xid = 0;
-#endif //DOGTK
 Display *dpy;
 Window win;
 GC gc;
@@ -209,12 +195,7 @@ int main(int argc,char *argv[]);
 #define DEFAULT_RC "edxrc"
 #endif /* MINIMAL */
 
-#ifdef EMACS
-#include "emacs.c"
-#endif
-#ifdef WORDSTAR
 #include "ws.c"
-#endif
 
 /******************** Start of cursor I/O ********************/
 
@@ -570,14 +551,6 @@ void read_rc()
 }
 #endif /* MINIMAL */
 
-#ifdef DOGTK
-static gboolean quit_gtk(GtkWidget *widget, GtkWidget *bw)
-{
-    gtk_main_quit();
-    return 0;
-}
-#endif //DOGTK
-
 void init(int argc,char *argv[])
 {
 	int screen;
@@ -622,24 +595,19 @@ void init(int argc,char *argv[])
 			CrColor = argv[++i];
 		else if (i<argc-1 && !strcasecmp(argv[i], "-j"))
 			ewin.jump = atoi(argv[++i]);
-#ifdef DOGTK
-		else if (i<argc-1 && !strcasecmp(argv[i], "-x"))
-			xid = atoi(argv[++i]);
-#endif //DOGTK
 		else if (i<argc-1 && !strcasecmp(argv[i], "-w")) {
 			screen_width = atoi(argv[++i]);
 			if (screen_width<20) screen_width = 20;
 		} else if (i<argc-1 && !strcasecmp(argv[i], "-h")) {
 			screen_height = atoi(argv[++i]);
 			if (screen_height<5) screen_height = 5;
-		} else if (i<argc-1 && !strcasecmp(argv[i], "-d")) {
+		} else if (!strcasecmp(argv[i], "-d")) {
 			dark = 1;
 			FgColor="Yellow";
 			BgColor="Black";
 			CrColor="White";
 			HiFgColor="Black";
 			HiBgColor="Grey75";
-			++i;
 		} else {
 			if (*ewin.name) break;
 			{
@@ -665,26 +633,8 @@ void init(int argc,char *argv[])
 	}
 #endif /* STATICBUF */
 
-#ifdef DOGTK
-   if (!xid) {
-       main_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	/* open the display */
 	dpy=XOpenDisplay(DisplayName);
-   }   
-   else {
-    main_win = gtk_plug_new(xid);
-    gtk_window_set_title (GTK_WINDOW (main_win), "gdx");
-    gtk_container_border_width (GTK_CONTAINER (main_win), 5);
-    gtk_signal_connect(GTK_OBJECT(main_win), "destroy",
-                      GTK_SIGNAL_FUNC(quit_gtk), NULL);
-    gtk_widget_realize(main_win);
-    win = GDK_WINDOW_XWINDOW(main_win->window);
-    dpy = GDK_WINDOW_XDISPLAY(main_win->window);
-   }
-#else //DOGTK
-	/* open the display */
-	dpy=XOpenDisplay(DisplayName);
-#endif //DOGTK
 
 	if(dpy==NULL)  {
 		fprintf(stderr,"Can't open display: %s\n",DisplayName);
@@ -724,18 +674,8 @@ void init(int argc,char *argv[])
 	memset(eolbuf, ' ', sizeof(eolbuf));
 
 	/* create the only window */
-#ifdef DOGTK
-	if(!xid)
-	  win=XCreateSimpleWindow(dpy,RootWindow(dpy,screen),x,y,Width,Height,0,
-		BlackPixel(dpy,screen),WhitePixel(dpy,screen));
-    else {
-    gtk_widget_set_usize (GTK_WIDGET (main_win),Width,Height);
-    gtk_widget_show(main_win);
-    }
-#else //DOGTK
 	win=XCreateSimpleWindow(dpy,RootWindow(dpy,screen),x,y,Width,Height,0,
 		BlackPixel(dpy,screen),WhitePixel(dpy,screen));
-#endif //DOGTK
 
 	/* setup window hints */
 	wmh->initial_state=NormalState;
@@ -799,7 +739,7 @@ void handle_key(char *astr, int skey, int state)
 
 	/* display keyboard shift/control/alt status */
 	highvideo();
-	gotoxy(0,y1);
+	gotoxy(0,y01);
 	for(n=5;n;chstr[n--]=' ');
 	if(state & ShiftMask) chstr[n++] = 'S';
 	if(state & Mod1Mask) chstr[n++] = 'A';
@@ -862,11 +802,7 @@ int main(int argc,char *argv[])
 	Atom WM_PROTOCOLS = 0;
 	struct sigaction sig;
 	struct sigaction act;
-	int y0 = 0, y1 = 0, yf, yt;
-
-#ifdef DOGTK
-    gtk_init (&argc, &argv);
-#endif //DOGTK
+	int y0 = 0, y01 = 0, yf, yt;
 
 	init(argc,argv);
 #ifndef MINIMAL
@@ -874,11 +810,7 @@ int main(int argc,char *argv[])
 #endif /* MINIMAL */
 
 	/* disconnect from the console */
-#ifdef DOGTK
-	if(!xid && do_background)
-#else
 	if(do_background)
-#endif //DOGTK
 		{switch (fork()) { case 0: case -1: break; default: exit(0); }}
 
 	/* set path */
@@ -948,16 +880,16 @@ int main(int argc,char *argv[])
 					moveto();
 					yf = y0;
 					if (y<yf) yf = y;
-					if (y1<yf) yf = y1;
+					if (y01<yf) yf = y01;
 					yt = y0;
 					if (y>yt) yt = y;
-					if (y1>yt) yt = y1;
+					if (y01>yt) yt = y01;
 					show_scr(yf, yt);
 					moveto();
 					cur_pos = get_cur();
 					gotoxy(x-1,y+1);
 					draw_cursor();
-					y1 = y;
+					y01 = y;
 				}
 			}
 			break;

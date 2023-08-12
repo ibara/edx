@@ -48,8 +48,8 @@ int x_offset;					/* offset of xtru from line_start */
 int xtru = 0, ytru = 0; 		/* file position */
 int ytot = 0;					/* 0 <= ytru <= ytot */
 
-int y1, y2; 				  /* 1st, 2nd line of window */
-int tabsize=4;				  /* tab size */
+int y01, y2; 				  /* 1st, 2nd line of window */
+int tabsize=8;				  /* tab size */
 int doCtrlC = 0;				/* decode next char from ^C function */
 int doCtrlK = 0;				/* decode next char from ^K function */
 int doCtrlQ = 0;				/* decode next char from ^Q function */
@@ -662,11 +662,7 @@ void sys_exit(int code)
 		/* watch where you're goin', clean up where you been */
 		if(selection_text) free(selection_text);
 		if(cfdpath) free(cfdpath);
-#ifdef DOGTK
-		gtk_exit(code);
-#else
 		exit(code);
-#endif //DOGTK
 	}
 	bell();
 }
@@ -935,7 +931,7 @@ void show_sdn(int line)
 
 void show_flag(int x, int g)
 {
-	gotoxy(20+x-1,y1);
+	gotoxy(20+x-1,y01);
 	putch(g? fsym[x]: '.');
 	flag[x] = g;
 }
@@ -954,7 +950,7 @@ void dialog(int key)
 	int skey;
 	skey = key & 0xff;
 
-	gotoxy(diastart+col,y1);
+	gotoxy(diastart+col,y01);
 #ifdef TERMINAL
 	if(key == 0x0c) {	/* ^L */
 #else
@@ -988,7 +984,7 @@ void dialog(int key)
 			default: {
 				if(col < 0 || !first) {
 					col = 0;
-					gotoxy(diastart+col,y1);
+					gotoxy(diastart+col,y01);
 					clreol();
 				}
 				if(col < dblen){
@@ -1009,10 +1005,10 @@ void dialog(int key)
 
 void show_note(char *prp)
 {
-	gotoxy(29,y1);
+	gotoxy(29,y01);
 	clreol();
 #ifdef TERMINAL
-	gotoxy(29,y1);
+	gotoxy(29,y01);
 #endif /* TERMINAL */
 	cputs(prp);
 #ifdef TERMINAL
@@ -1051,7 +1047,7 @@ void show_pos()
 
 	if(executive != MAIN) return;
 	highvideo();
-	gotoxy(5,y1);
+	gotoxy(5,y01);
 	snprintf(tbuf, sizeof tbuf, "%d %d     ", ytru+1, xtru);
 	cputs(tbuf);
 }
@@ -1068,7 +1064,7 @@ void show_top()
 #else
 	if(executive != MAIN) return;
 #endif /* TERMINAL */
-	gotoxy(0,y1);
+	gotoxy(0,y01);
 	highvideo();
 	clreol();
 	show_pos();
@@ -1317,8 +1313,8 @@ void do_save()
 /* go to top of file and reset to known condition */
 void top()
 {
-	y1 = YTOP;
-	y2 = y1+1;
+	y01 = YTOP;
+	y2 = y01+1;
 	line_start = edbuf;
 	x_offset = 1;
 	xtru = x = 1;
@@ -2202,7 +2198,6 @@ void key_return()
 void key_normal(int key)
 {
 	char *s=line_start+x_offset;
-	int xtmp;
 
 	/* reset marked block on char entry */
 	if(flag[BLK]) { key_delete(); s = cur_pos; }
@@ -2224,7 +2219,7 @@ void key_normal(int key)
 
 	if(!flag[FIL] || xtru < screen_width) return;
 
-	xtmp = block_fill();	/* cursor_down */
+	(void) block_fill();	/* cursor_down */
 }
 
 /* simple, aint it? */

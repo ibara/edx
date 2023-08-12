@@ -4,7 +4,7 @@ PROG =	edx
 OBJS =	edx.o
 
 CC ?=		cc
-CFLAGS =	-O2 -pipe -DWORDSTAR -I/usr/X11R6/include
+CFLAGS =	-O2 -pipe -I/usr/X11R6/include
 LDFLAGS =	-L/usr/X11R6/lib
 
 all: ${OBJS}
